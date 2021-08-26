@@ -60,41 +60,11 @@ struct WidgetEntryView: View {
     var body : some View {
         switch family {
         case .systemSmall:
-            VStack {
-                Text(entry.FOAASMessage.message)
-                HStack {
-                    Spacer()
-                    Text(entry.FOAASMessage.subtitle)
-                        .italic()
-                        .padding(.trailing, 10)
-                }
-            }
+            SmallWidgetView(entry: entry)
         case .systemMedium:
-            VStack {
-                Spacer()
-                Text(entry.FOAASMessage.message)
-                Spacer()
-                HStack {
-                    Spacer()
-                    Text(entry.FOAASMessage.subtitle)
-                        .italic()
-                        .padding(.trailing, 10)
-                        .padding(.bottom, 10)
-                }
-            }
+            MediumWidgetView(entry: entry)
         case .systemLarge:
-            VStack {
-                Spacer()
-                Text(entry.FOAASMessage.message)
-                Spacer()
-                HStack {
-                    Spacer()
-                    Text(entry.FOAASMessage.subtitle)
-                        .italic()
-                        .padding(.trailing, 10)
-                        .padding(.bottom, 10)
-                }
-            }
+            LargeWidgetView(entry: entry)
         default:
             MessageView(message: entry.FOAASMessage)
         }
@@ -127,5 +97,147 @@ struct myWidget_Previews: PreviewProvider {
             WidgetEntryView(entry: FOAASEntry(date: Date(), FOAASMessage: FOAASMessage.placeholder()))
                 .previewContext(WidgetPreviewContext(family: .systemLarge))
         }
+    }
+}
+
+//MARK: - Views
+
+struct Header: View {
+    let image: UIImage = UIImage()
+    let icon: UIImage = UIImage()
+    
+    var body: some View {
+        ZStack {
+            //Imagem do Jogo
+            Rectangle()
+                .clipShape(RoundedRectangle(cornerRadius: 15))
+            
+            VStack {
+                HStack {
+                    Spacer()
+                    //Icone Plataforma
+                    Rectangle()
+                        .foregroundColor(.blue)
+                        .clipShape(Circle())
+                        .frame(width: 30, height: 30)
+                }//HStack
+                Spacer()
+            }//VStack
+            .padding(6)
+        }//ZStack
+    }
+}
+
+struct FrameView: View {
+    let image: UIImage = UIImage()
+    let icon: UIImage = UIImage()
+    let title: String
+    let height: CGFloat
+    
+    var body: some View {
+        let large = height > 180
+        
+        VStack {
+            Header()
+                .frame(height: large ? height * 0.725 : height * 0.6)
+            
+            Text(title)
+                .frame(height: large ? height * 0.125 : height * 0.3)
+        }
+        .frame(minWidth: 140)
+    }
+}
+
+struct MoreGames: View {
+    let number: Int
+    let height: CGFloat
+    
+    var body: some View {
+        VStack {
+            ZStack {
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(Color.black)
+                    .foregroundColor(.white)
+                    .frame(height: height * 0.6)
+
+                Text("+\(number)")
+                    .font(.system(size: 30))
+            }
+            .offset(y: 3)
+            Spacer()
+        }
+    }
+}
+
+//MARK: Small
+struct SmallWidgetView: View {
+    let entry : Provider.Entry
+    
+    var body: some View {
+        GeometryReader { reader in
+            
+            FrameView(title: entry.FOAASMessage.message, height: reader.size.height)
+               
+                
+        }//GeometryReader
+        .padding(8)
+    }
+}
+
+//MARK: Medium
+struct MediumWidgetView: View {
+    let entry : Provider.Entry
+ 
+    var body: some View {
+        GeometryReader { reader in
+            
+            HStack {
+                FrameView(title: entry.FOAASMessage.message, height: reader.size.height)
+                
+                FrameView(title: entry.FOAASMessage.message, height: reader.size.height)
+                
+                MoreGames(number: 8, height: reader.size.height)
+                    .frame(minWidth: 50)
+                
+            }//VStack
+        }//GeometryReader
+        .padding(8)
+    }
+}
+
+//MARK: Large
+struct LargeWidgetView: View {
+    let entry : Provider.Entry
+    let number: Int = 4
+    var body: some View {
+        GeometryReader { reader in
+            let divider: CGFloat = number >= 2 ? 2 : 1
+            let height = reader.size.height / divider
+            
+            VStack {
+                
+                HStack {
+                    FrameView(title: entry.FOAASMessage.message, height: height)
+                    
+                    if number >= 4 {
+                        FrameView(title: entry.FOAASMessage.message, height: height)
+                    }
+                }
+                
+                HStack {
+                    if number >= 2 {
+                        FrameView(title: entry.FOAASMessage.message, height: height)
+                    }
+                    if number >= 3 && number < 5 {
+                        FrameView(title: entry.FOAASMessage.message, height: height)
+                    }
+                    if number > 4 {
+                        MoreGames(number: number-3, height: height)
+                    }
+                }
+                
+            }//VStack
+        }//GeometryReader
+        .padding(8)
     }
 }
