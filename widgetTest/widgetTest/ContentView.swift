@@ -55,7 +55,12 @@ struct ImageTest: View {
                 self.image = image
             case .failure(let error):
                 print(error)
-                self.image = UIImage()
+                if let img = UIImage(named: "imageNotFound") {
+                    self.image = img
+                }
+                else {
+                    self.image = UIImage()
+                }
             }
         })
     }
