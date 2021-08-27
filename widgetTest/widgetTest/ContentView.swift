@@ -16,7 +16,7 @@ class ImageLoader: ObservableObject {
             didChange.send(data)
         }
     }
-
+    
     init(urlString:String) {
         guard let url = URL(string: urlString) else { return }
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
@@ -32,24 +32,35 @@ class ImageLoader: ObservableObject {
 struct BootlegAsyncImage: View {
     @ObservedObject var imageLoader:ImageLoader
     @State var image:UIImage = UIImage()
-
+    
     init(withURL url:String) {
         imageLoader = ImageLoader(urlString:url)
     }
-
+    
     var body: some View {
         
-            Image(uiImage: image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width:100, height:100)
-                .onReceive(imageLoader.didChange) { data in
+        Image(uiImage: image)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width:100, height:100)
+            .onReceive(imageLoader.didChange) { data in
                 self.image = UIImage(data: data) ?? UIImage()
-        }
+            }
     }
 }
 
 struct ContentView: View {
+    
+    var body: some View {
+        
+        WidgetTest()
+        
+        //        ImageTest()
+    }
+    
+}
+
+struct WidgetTest: View {
     @State var results = [GameResponse]()
     
     var body: some View {
@@ -59,7 +70,7 @@ struct ContentView: View {
                     //                    save(item)
                     print(item.id, item.name)
                 }
-//            BootlegAsyncImage(withURL: getImageHash(item))
+            //            BootlegAsyncImage(withURL: getImageHash(item))
         }.onAppear(perform: loadData)
     }
     
@@ -93,4 +104,28 @@ struct ContentView: View {
             }
         }
     }
+    
+}
+
+struct ImageTest: View {
+    
+    @State var image = UIImage()
+    
+    var body: some View {
+        Image(uiImage: image)
+            .onAppear{loadImage()}
+    }
+    
+    func loadImage(){
+        HTTPRequest().fetchImageByGame(name: "The Kings Crusade", completion: { result in
+            switch result {
+            case.success(let image):
+                self.image = image
+            case .failure(let error):
+                print(error)
+                self.image = UIImage()
+            }
+        })
+    }
+    
 }
