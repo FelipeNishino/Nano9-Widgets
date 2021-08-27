@@ -11,9 +11,9 @@ struct ContentView: View {
     
     var body: some View {
         
-        WidgetTest()
+//        WidgetTest()
         
-        //        ImageTest()
+        ImageTest()
     }
     
 }
@@ -27,23 +27,7 @@ struct WidgetTest: View {
                 .onTapGesture {
                     print(item.id, item.name)
                 }
-            //            BootlegAsyncImage(withURL: getImageHash(item))
         }.onAppear(perform: loadData)
-    }
-    
-    func getImageHash(_ game: GameResponse) -> String {
-        var url = ""
-        HTTPRequest().request(IGDBRoutes.Artwork(), genericType: [ArtworkResponse].self) { result, response in
-            switch result {
-            case .success(let res):
-                print(res)
-                url = res.first!.getImageURL()
-            case .failure(let err):
-                print(err)
-                break
-            }
-        }
-        return url
     }
     
     func loadData() {
@@ -75,5 +59,4 @@ struct ImageTest: View {
             }
         })
     }
-    
 }

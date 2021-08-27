@@ -22,7 +22,6 @@
 		E2310CA326D9469E00EE74EF /* Routable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897299A926D8080D00F5E319 /* Routable.swift */; };
 		E2310CAB26D94F6B00EE74EF /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2310CAA26D94F6B00EE74EF /* NetworkManager.swift */; };
 		E2310CAC26D94F7400EE74EF /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2310CAA26D94F6B00EE74EF /* NetworkManager.swift */; };
-		E2310CAE26D94FF000EE74EF /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2310CAD26D94FF000EE74EF /* ImageLoader.swift */; };
 		E2310CB126D96D3500EE74EF /* Collection+Choose.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2310CB026D96D3400EE74EF /* Collection+Choose.swift */; };
 		E2310CB226D96DD100EE74EF /* Collection+Choose.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2310CB026D96D3400EE74EF /* Collection+Choose.swift */; };
 		E238253326D6CB760079D45C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E238253226D6CB760079D45C /* WidgetKit.framework */; };
@@ -73,7 +72,6 @@
 		897299AC26D8082A00F5E319 /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		897299AD26D8082A00F5E319 /* HTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
 		E2310CAA26D94F6B00EE74EF /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		E2310CAD26D94FF000EE74EF /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		E2310CB026D96D3400EE74EF /* Collection+Choose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Choose.swift"; sourceTree = "<group>"; };
 		E238252B26D6C7770079D45C /* widgetTest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widgetTest.entitlements; sourceTree = "<group>"; };
 		E238253026D6CB760079D45C /* myWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = myWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -195,7 +193,6 @@
 				E2310CAF26D96D2200EE74EF /* Extensions */,
 				E238252B26D6C7770079D45C /* widgetTest.entitlements */,
 				E2D3ACD226D55DF90096DFCB /* widgetTestApp.swift */,
-				E2310CAD26D94FF000EE74EF /* ImageLoader.swift */,
 				E2D3ACD426D55DF90096DFCB /* ContentView.swift */,
 				8972999C26D8076D00F5E319 /* Services */,
 				8972999D26D8077D00F5E319 /* Models */,
@@ -336,7 +333,6 @@
 			files = (
 				E2310CAB26D94F6B00EE74EF /* NetworkManager.swift in Sources */,
 				E238253E26D6CB770079D45C /* myWidget.intentdefinition in Sources */,
-				E2310CAE26D94FF000EE74EF /* ImageLoader.swift in Sources */,
 				E2310CB126D96D3500EE74EF /* Collection+Choose.swift in Sources */,
 				897299A226D807F800F5E319 /* LoginResponse.swift in Sources */,
 				897299A426D807F900F5E319 /* ArtworkResponse.swift in Sources */,
