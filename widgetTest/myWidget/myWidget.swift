@@ -29,7 +29,7 @@ struct Provider: TimelineProvider {
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<GamesEntry>) -> Void) {
         NetworkManager.shared.getGameData { data in
-            let targetDate = Calendar.current.date(byAdding: .second, value: 30, to: Date())!
+            let targetDate = Calendar.current.date(byAdding: .hour, value: 6, to: Date())!
             let timeline = Timeline(entries: [GamesEntry(date: Date(), games: data ?? [GameResponse(id: 0, name: "error")])], policy: .after(targetDate))
             completion(timeline)
         }
@@ -222,7 +222,7 @@ struct LargeWidgetView: View {
             let divider: CGFloat = number >= 2 ? 2 : 1
             let height = reader.size.height / divider
             
-            var games = Set<GameResponse>(entry.games)
+            var games = Set<GameResponse>(entry.games.shuffled())
             let number = games.count
             VStack {
                 
