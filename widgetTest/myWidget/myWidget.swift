@@ -121,9 +121,8 @@ struct Header: View {
                 HStack {
                     Spacer()
                     //Icone Plataforma
-                    Rectangle()
-                        .foregroundColor(.blue)
-                        .clipShape(Circle())
+                    Image(["steam_icon", "epic_icon", "prime_icon"].randomElement()!)
+                        .resizable()
                         .frame(width: 30, height: 30)
                 }//HStack
                 Spacer()

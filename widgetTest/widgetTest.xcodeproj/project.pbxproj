@@ -33,6 +33,7 @@
 		E238253E26D6CB770079D45C /* myWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = E238253926D6CB760079D45C /* myWidget.intentdefinition */; };
 		E238254126D6CB770079D45C /* myWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E238253026D6CB760079D45C /* myWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E262388E26D8EC4E00AC6873 /* GameResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897299A126D807F800F5E319 /* GameResponse.swift */; };
+		E2700FA726D973A0000C710D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2D3ACD626D55DFA0096DFCB /* Assets.xcassets */; };
 		E2D3ACD326D55DF90096DFCB /* widgetTestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D3ACD226D55DF90096DFCB /* widgetTestApp.swift */; };
 		E2D3ACD526D55DF90096DFCB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D3ACD426D55DF90096DFCB /* ContentView.swift */; };
 		E2D3ACD726D55DFA0096DFCB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2D3ACD626D55DFA0096DFCB /* Assets.xcassets */; };
@@ -294,6 +295,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2700FA726D973A0000C710D /* Assets.xcassets in Resources */,
 				E238253B26D6CB770079D45C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
