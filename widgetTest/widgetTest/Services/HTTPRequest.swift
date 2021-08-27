@@ -84,7 +84,6 @@ struct HTTPRequest {
         request(T.self, request: urlRequest) { result, response in
             completion(result,response)
         }
-        
     }
     
     private func request<T: Codable>(_ genericType: T.Type,request: URLRequest, completion: @escaping (Result<(T), Error>, URLResponse?) -> Void){
