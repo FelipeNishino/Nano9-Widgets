@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum AuthenticationError: Error {
     case invalidCredentials
@@ -28,6 +29,58 @@ struct HTTPRequest {
         ]
     }
     
+    //MARK: Specifics
+    func fetchImageByGame(name: String, completion: @escaping(Result<UIImage, Error>) -> Void) {
+        
+        request(IGDBRoutes.Game()
+                    .filterBy(field: "name", value: "\"\(name)\""), genericType: [GameResponse].self) { result, response in
+
+            switch result {
+            case .success(let gameResp):
+                
+                guard let id = gameResp.first?.id.description else {
+                    completion(.failure(RequestError.custon(errorMessage: "ID ERROR")))
+                    return
+                }
+                
+                request(IGDBRoutes.Artwork().filterBy(field: "game", value: id)
+                        , genericType: [ArtworkResponse].self) { result, response in
+
+                    switch result {
+                    case .success(let artworkRes):
+                        guard let url = artworkRes.first?.getImageURL() else {
+                            completion(.failure(RequestError.custon(errorMessage: "URL ERROR")))
+                            return
+                        }
+                        
+                        fetchImageByUrl(url: url) { result in
+                            
+                            completion(.success(result))
+            
+                        }
+                        
+                    case.failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    private func fetchImageByUrl(url: String, completion: (UIImage) -> Void) {
+        let url = URL(string: url)
+        
+        let data = try? Data(contentsOf: url!)
+        guard let data = data else {
+            completion(UIImage())
+            return
+        }
+        completion((UIImage(data: data) ?? UIImage()))
+    }
+    
     func refreshToken( completion: @escaping (Result<LoginReponse, Error>) -> Void) {
         
         let parameters: [String:String] = ["client_id": token.clientID, "client_secret": token.clientSecret, "grant_type": token.grantType]
@@ -44,6 +97,7 @@ struct HTTPRequest {
         }
     }
     
+    //MARK: General
     func request<T: Codable>(_ routable: Routable, genericType: T.Type, completion: @escaping (Result<T, Error>, URLResponse?) -> Void){
         if token.isAuthentication {
             request(routable, genericType: genericType, header: header, completion: completion)

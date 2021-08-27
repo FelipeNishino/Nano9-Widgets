@@ -8,6 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    var body: some View {
+        
+        WidgetTest()
+        
+        //        ImageTest()
+    }
+    
+}
+
+struct WidgetTest: View {
     @State var results = [GameResponse]()
     
     var body: some View {
@@ -16,7 +27,7 @@ struct ContentView: View {
                 .onTapGesture {
                     print(item.id, item.name)
                 }
-//            BootlegAsyncImage(withURL: getImageHash(item))
+            //            BootlegAsyncImage(withURL: getImageHash(item))
         }.onAppear(perform: loadData)
     }
     
@@ -41,4 +52,28 @@ struct ContentView: View {
             return
         }
     }
+    
+}
+
+struct ImageTest: View {
+    
+    @State var image = UIImage()
+    
+    var body: some View {
+        Image(uiImage: image)
+            .onAppear{loadImage()}
+    }
+    
+    func loadImage(){
+        HTTPRequest().fetchImageByGame(name: "The Kings Crusade", completion: { result in
+            switch result {
+            case.success(let image):
+                self.image = image
+            case .failure(let error):
+                print(error)
+                self.image = UIImage()
+            }
+        })
+    }
+    
 }
