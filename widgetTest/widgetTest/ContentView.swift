@@ -6,82 +6,91 @@
 //
 
 import SwiftUI
+import Foundation
+import Combine
+
+class ImageLoader: ObservableObject {
+    var didChange = PassthroughSubject<Data, Never>()
+    var data = Data() {
+        didSet {
+            didChange.send(data)
+        }
+    }
+
+    init(urlString:String) {
+        guard let url = URL(string: urlString) else { return }
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else { return }
+            DispatchQueue.main.async {
+                self.data = data
+            }
+        }
+        task.resume()
+    }
+}
+
+struct BootlegAsyncImage: View {
+    @ObservedObject var imageLoader:ImageLoader
+    @State var image:UIImage = UIImage()
+
+    init(withURL url:String) {
+        imageLoader = ImageLoader(urlString:url)
+    }
+
+    var body: some View {
+        
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width:100, height:100)
+                .onReceive(imageLoader.didChange) { data in
+                self.image = UIImage(data: data) ?? UIImage()
+        }
+    }
+}
 
 struct ContentView: View {
-    @State var results = [FOAASMessage]()
-    
-    @AppStorage("FOAAS", store: UserDefaults(suiteName: "group.com.felipenishino.widgetTest"))
-    var FOAASData: Data = Data()
+    @State var results = [GameResponse]()
     
     var body: some View {
         List(results, id: \.id) { item in
-            MessageView(message: item)
+            Text(item.name)
                 .onTapGesture {
-                    save(item)
+                    //                    save(item)
+                    print(item.id, item.name)
                 }
+//            BootlegAsyncImage(withURL: getImageHash(item))
         }.onAppear(perform: loadData)
     }
     
-    func save(_ item: FOAASMessage) {
-        guard let FOAASData = try? JSONEncoder().encode(item) else {
-            print("Error encoding FOAAS into json")
-            return
+    func getImageHash(_ game: GameResponse) -> String {
+        var url = ""
+        HTTPRequest().request(IGDBRoutes.Artwork(), genericType: [ArtworkResponse].self) { result, response in
+            switch result {
+            case .success(let res):
+                print(res)
+                url = res.first!.getImageURL()
+            case .failure(let err):
+                print(err)
+                break
+            }
         }
-        self.FOAASData = FOAASData
-        print("Saved message: \(item)")
+        return url
     }
     
     func loadData() {
-        (0...4).forEach { _ in
-            let from = ["some%20dipshit", "some%20dumbfuck", "some%20fucker"].randomElement()!
-            let endpoints = ["bye/\(from)", "dumbledore/\(from)", "fewer/anon/\(from)", "flying/\(from)", "king/anon/\(from)"]
-            guard let selectedEndpoint = endpoints.randomElement() else { return }
-            guard let url = URL(string: "https://foaas.com/\(selectedEndpoint)") else {
-                print("Your API end point is Invalid, url: https://foaas.com/\(selectedEndpoint)")
-                return
+        let gameRequest = HTTPRequest()
+        var route = IGDBRoutes.Game()
+        route.parameters = ["fields" : "id, name;","limit" : "5"]
+        gameRequest.request(route, genericType: [GameResponse].self) { result, response in
+            switch result {
+            case .success(let res):
+                self.results = res
+                break
+            case .failure(let err):
+                print("response error:")
+                print(err)
             }
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Accept")
-            
-            URLSession.shared.dataTask(with: request) { data, res, error in
-                if error != nil || data == nil {
-                    print("Client error!")
-                    return
-                }
-                
-                guard let res = res as? HTTPURLResponse,
-                      (200...299).contains(res.statusCode) else {
-                    self.handleServerError(res!)
-                    return
-                }
-                
-                guard let mime = res.mimeType, mime == "application/json" else {
-                    print("Wrong MIME type!")
-                    return
-                }
-                
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data!, options: [])
-                    print(json)
-                } catch {
-                    print("JSON error: \(error.localizedDescription)")
-                }
-                
-                do {
-                    let response = try FOAASMessage(from: data)
-                    self.results.append(response)
-                }
-                catch {
-                    print("Error on message decoding")
-                }
-                
-                return
-            }.resume()
         }
-        
-    }
-    
-    func handleServerError(_ res: URLResponse) {
-        print("Azedou")
     }
 }
