@@ -8,42 +8,6 @@
 import WidgetKit
 import SwiftUI
 
-class NetworkManager {
-    static let shared = NetworkManager()
-    
-    private init() {}
-    
-    let ids = ["33284","104748","146815","85450","89616"]
-    
-    func buildIds() -> String {
-        var str = "("
-        ids.forEach { id in
-            str += "\(id),"
-        }
-        return str.dropLast() + ")"
-    }
-    
-    func getGameData(completion: @escaping ([GameResponse]?) -> Void) {
-        
-        
-        let gameRequest = HTTPRequest()
-        var route = IGDBRoutes.Game()
-        
-        route.parameters = ["fields" : "id, name;","id" : "\(buildIds())"]
-        gameRequest.request(route, genericType: [GameResponse].self) { result, response in
-            switch result {
-            case .success(let res):
-                return completion(res)
-            case .failure(let err):
-                print("response error:")
-                print(err)
-            }
-        }
-        
-        return completion(nil)
-    }
-}
-
 struct GamesEntry: TimelineEntry {
     let date : Date
     let games : [GameResponse]
@@ -59,39 +23,36 @@ struct Provider: TimelineProvider {
     func getSnapshot(in context: Context, completion: @escaping (GamesEntry) -> Void) {
         NetworkManager.shared.getGameData { data in
             let entry = GamesEntry(date: Date(), games: data ?? [GameResponse(id: 0, name: "error")])
-            print(entry.games)
             completion(entry)
         }
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<GamesEntry>) -> Void) {
         NetworkManager.shared.getGameData { data in
-            let targetDate = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
+            let targetDate = Calendar.current.date(byAdding: .second, value: 30, to: Date())!
             let timeline = Timeline(entries: [GamesEntry(date: Date(), games: data ?? [GameResponse(id: 0, name: "error")])], policy: .after(targetDate))
             completion(timeline)
         }
     }
-    
-    typealias Entry = GamesEntry
 }
 
-struct PlaceholderView: View {
-    var body: some View {
+//struct PlaceholderView: View {
+//    var body: some View {
 //        MessageView(message: FOAASMessage.placeholder())
-        VStack {
-            Spacer()
-            Text(FOAASMessage.placeholder().message)
-            Spacer()
-            HStack {
-                Spacer()
-                Text(FOAASMessage.placeholder().subtitle)
-                    .italic()
-                    .padding(.trailing, 10)
-                    .padding(.bottom, 10)
-            }
-        }
-    }
-}
+//        VStack {
+//            Spacer()
+//            Text(FOAASMessage.placeholder().message)
+//            Spacer()
+//            HStack {
+//                Spacer()
+//                Text(FOAASMessage.placeholder().subtitle)
+//                    .italic()
+//                    .padding(.trailing, 10)
+//                    .padding(.bottom, 10)
+//            }
+//        }
+//    }
+//}
 
 struct WidgetEntryView: View {
     let entry : Provider.Entry
@@ -107,20 +68,9 @@ struct WidgetEntryView: View {
         case .systemMedium:
             MediumWidgetView(entry: entry)
         case .systemLarge:
-            LargeWidgetView(entry: entry)
+            LargeWidgetView(entry: entry, number: entry.games.count)
         default:
-            VStack {
-                Spacer()
-//                Text(entry.FOAASMessage.message)
-                Spacer()
-                HStack {
-                    Spacer()
-//                    Text(entry.FOAASMessage.subtitle)
-//                        .italic()
-//                        .padding(.trailing, 10)
-//                        .padding(.bottom, 10)
-                }
-            }
+            SmallWidgetView(entry: entry)
         }
     }
 }
@@ -151,7 +101,7 @@ struct myWidget_Previews: PreviewProvider {
             WidgetEntryView(entry: GamesEntry(date: Date(), games: GamesEntry.previewData))
                 .previewContext(WidgetPreviewContext(family: .systemLarge))
         }
-        .environment(\.colorScheme, .dark)
+        .environment(\.colorScheme, .light)
     }
 }
 
@@ -183,10 +133,12 @@ struct Header: View {
     }
 }
 
-struct FrameView: View {
+struct FrameView: View, Identifiable {
+    var id = UUID()
     let image: UIImage = UIImage()
     let icon: UIImage = UIImage()
     let title: String
+    let date: Date
     let height: CGFloat
     
     var body: some View {
@@ -231,7 +183,7 @@ struct SmallWidgetView: View {
     var body: some View {
         GeometryReader { reader in
             
-            FrameView(title: entry.FOAASMessage.message, height: reader.size.height)
+            FrameView(title: entry.games.randomElement()!.name, date: entry.date, height: reader.size.height)
                
                 
         }//GeometryReader
@@ -243,17 +195,17 @@ struct SmallWidgetView: View {
 struct MediumWidgetView: View {
     let entry : Provider.Entry
  
+    @ViewBuilder
     var body: some View {
         GeometryReader { reader in
-            
             HStack {
-                FrameView(title: entry.FOAASMessage.message, height: reader.size.height)
-                
-                FrameView(title: entry.FOAASMessage.message, height: reader.size.height)
-                
-                MoreGames(number: 8, height: reader.size.height)
-                    .frame(minWidth: 50)
-                
+                ForEach(entry.games.choose(min(2, entry.games.count)), id: \.self) { game in
+                    FrameView(title: game.name, date: entry.date, height: reader.size.height)
+                }
+                if (entry.games.count > 2) {
+                    MoreGames(number: entry.games.count-2, height: reader.size.height)
+                        .frame(minWidth: 50)
+                }
             }//VStack
         }//GeometryReader
         .padding(8)
@@ -263,28 +215,32 @@ struct MediumWidgetView: View {
 //MARK: Large
 struct LargeWidgetView: View {
     let entry : Provider.Entry
-    let number: Int = 4
+    let number: Int
+    
     var body: some View {
+        
         GeometryReader { reader in
             let divider: CGFloat = number >= 2 ? 2 : 1
             let height = reader.size.height / divider
             
+            var games = Set<GameResponse>(entry.games)
+            let number = games.count
             VStack {
                 
                 HStack {
-                    FrameView(title: entry.FOAASMessage.message, height: height)
+                    FrameView(title: games.removeFirst().name, date: entry.date, height: height)
                     
                     if number >= 4 {
-                        FrameView(title: entry.FOAASMessage.message, height: height)
+                        FrameView(title: games.removeFirst().name, date: entry.date, height: height)
                     }
                 }
                 
                 HStack {
                     if number >= 2 {
-                        FrameView(title: entry.FOAASMessage.message, height: height)
+                        FrameView(title: games.removeFirst().name, date: entry.date, height: height)
                     }
                     if number >= 3 && number < 5 {
-                        FrameView(title: entry.FOAASMessage.message, height: height)
+                        FrameView(title: games.removeFirst().name, date: entry.date, height: height)
                     }
                     if number > 4 {
                         MoreGames(number: number-3, height: height)

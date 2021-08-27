@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct GameResponse: Codable {
+struct GameResponse: Codable, Hashable {
     let id: Int
     let name: String
+    
+    static let error = GameResponse(id: 0, name: "error")
 }
