@@ -4,7 +4,7 @@
 //
 //  Created by Felipe Nishino on 27/08/21.
 //
-
+import SwiftUI
 import Foundation
 
 class NetworkManager {
@@ -22,7 +22,7 @@ class NetworkManager {
         return str.dropLast() + ")"
     }
     
-    func getGameData(completion: @escaping ([GameResponse]?) -> Void) {
+    func getGameData(completion: @escaping ([Game]?) -> Void) {
         let gameRequest = HTTPRequest()
         let route = IGDBRoutes.Game()
         
@@ -32,12 +32,30 @@ class NetworkManager {
             switch result {
             case .success(let res):
                 print(res)
-                return completion(res)
+                let games = res.map { Game(gameResponse: $0) }
+                self.getImage(games: games) { result in
+                    completion(result)
+                }
             case .failure(let err):
                 print("response error:")
                 print(err)
-                return completion([GameResponse(id: -1, name: err.localizedDescription)])
+                return completion([Game(id: -1, name: err.localizedDescription)])
             }
         }
+    }
+    
+    func getImage(games: [Game], completion: ([Game]?) -> Void) {
+        var results: [Game] = []
+        for game in games {
+            HTTPRequest().fetchImageByGame(name: game.name) { result in
+                switch result {
+                case .success(let image):
+                    results.append(game.setImage(image: image))
+                case .failure(_):
+                    results.append(game.setImage(image: UIImage()))
+                }
+            }
+        }
+        completion(results)
     }
 }

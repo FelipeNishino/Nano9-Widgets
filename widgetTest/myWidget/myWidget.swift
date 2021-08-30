@@ -10,19 +10,19 @@ import SwiftUI
 
 struct GamesEntry: TimelineEntry {
     let date : Date
-    let games : [GameResponse]
+    let games : [Game]
     
-    static let previewData = [GameResponse(id: 1323, name: "Game 1"), GameResponse(id: 3323, name: "Game 2"), GameResponse(id: 2323, name: "Game 3")]
+    static let previewData = [Game(id: 1323, name: "Game 1"), Game(id: 3323, name: "Game 2"), Game(id: 2323, name: "Game 3")]
 }
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> GamesEntry {
-        GamesEntry(date: Date(), games: [GameResponse(id: 1232, name: "asdasdas adsasdad asd")])
+        GamesEntry(date: Date(), games: [Game(id: 1232, name: "asdasdas adsasdad asd")])
     }
     
     func getSnapshot(in context: Context, completion: @escaping (GamesEntry) -> Void) {
         NetworkManager.shared.getGameData { data in
-            let entry = GamesEntry(date: Date(), games: data ?? [GameResponse(id: 0, name: "error")])
+            let entry = GamesEntry(date: Date(), games: data ?? [Game(id: 0, name: "error")])
             completion(entry)
         }
     }
@@ -30,7 +30,7 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<GamesEntry>) -> Void) {
         NetworkManager.shared.getGameData { data in
             let targetDate = Calendar.current.date(byAdding: .hour, value: 6, to: Date())!
-            let timeline = Timeline(entries: [GamesEntry(date: Date(), games: data ?? [GameResponse(id: 0, name: "error")])], policy: .after(targetDate))
+            let timeline = Timeline(entries: [GamesEntry(date: Date(), games: data ?? [Game(id: 0, name: "error")])], policy: .after(targetDate))
             completion(timeline)
         }
     }
@@ -108,13 +108,13 @@ struct myWidget_Previews: PreviewProvider {
 //MARK: - Views
 
 struct Header: View {
-    let image: UIImage = UIImage()
+    let image: UIImage
     let icon: UIImage = UIImage()
     
     var body: some View {
         ZStack {
             //Imagem do Jogo
-            Rectangle()
+            Image(uiImage: image)
                 .clipShape(RoundedRectangle(cornerRadius: 15))
             
             VStack {
@@ -134,9 +134,9 @@ struct Header: View {
 
 struct FrameView: View, Identifiable {
     var id = UUID()
-    let image: UIImage = UIImage()
-    let icon: UIImage = UIImage()
     let title: String
+    let image: UIImage
+    let icon: UIImage = UIImage()
     let date: Date
     let height: CGFloat
     
@@ -144,7 +144,7 @@ struct FrameView: View, Identifiable {
         let large = height > 180
         
         VStack {
-            Header()
+            Header(image: image)
                 .frame(height: large ? height * 0.725 : height * 0.6)
             
             Text(title)
@@ -181,8 +181,9 @@ struct SmallWidgetView: View {
     
     var body: some View {
         GeometryReader { reader in
-            
-            FrameView(title: entry.games.randomElement()!.name, date: entry.date, height: reader.size.height)
+            let element = entry.games.randomElement()!
+
+            FrameView(title: element.name, image: element.image!, date: entry.date, height: reader.size.height)
                
                 
         }//GeometryReader
@@ -199,7 +200,7 @@ struct MediumWidgetView: View {
         GeometryReader { reader in
             HStack {
                 ForEach(entry.games.choose(min(2, entry.games.count)), id: \.self) { game in
-                    FrameView(title: game.name, date: entry.date, height: reader.size.height)
+                    FrameView(title: game.name, image: game.image!, date: entry.date, height: reader.size.height)
                 }
                 if (entry.games.count > 2) {
                     MoreGames(number: entry.games.count-2, height: reader.size.height)
@@ -222,24 +223,24 @@ struct LargeWidgetView: View {
             let divider: CGFloat = number >= 2 ? 2 : 1
             let height = reader.size.height / divider
             
-            var games = Set<GameResponse>(entry.games.shuffled())
+            let games: [Game] = entry.games.shuffled()
             let number = games.count
             VStack {
                 
                 HStack {
-                    FrameView(title: games.removeFirst().name, date: entry.date, height: height)
+                    FrameView(title: games[0].name, image: games[0].image!, date: entry.date, height: height)
                     
                     if number >= 4 {
-                        FrameView(title: games.removeFirst().name, date: entry.date, height: height)
+                        FrameView(title: games[3].name, image: games[3].image!, date: entry.date, height: height)
                     }
                 }
                 
                 HStack {
                     if number >= 2 {
-                        FrameView(title: games.removeFirst().name, date: entry.date, height: height)
+                        FrameView(title: games[1].name, image: games[1].image!, date: entry.date, height: height)
                     }
                     if number >= 3 && number < 5 {
-                        FrameView(title: games.removeFirst().name, date: entry.date, height: height)
+                        FrameView(title: games[2].name, image: games[2].image!, date: entry.date, height: height)
                     }
                     if number > 4 {
                         MoreGames(number: number-3, height: height)
@@ -250,4 +251,5 @@ struct LargeWidgetView: View {
         }//GeometryReader
         .padding(8)
     }
+    
 }

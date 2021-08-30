@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		896E25A526DD5336009261DC /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896E25A426DD5336009261DC /* Game.swift */; };
+		896E25A626DD56BC009261DC /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896E25A426DD5336009261DC /* Game.swift */; };
 		897299A226D807F800F5E319 /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8972999F26D807F800F5E319 /* LoginResponse.swift */; };
 		897299A426D807F900F5E319 /* ArtworkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897299A026D807F800F5E319 /* ArtworkResponse.swift */; };
 		897299A626D807F900F5E319 /* GameResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897299A126D807F800F5E319 /* GameResponse.swift */; };
@@ -64,6 +66,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		896E25A426DD5336009261DC /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		8972999F26D807F800F5E319 /* LoginResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
 		897299A026D807F800F5E319 /* ArtworkResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtworkResponse.swift; sourceTree = "<group>"; };
 		897299A126D807F800F5E319 /* GameResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameResponse.swift; sourceTree = "<group>"; };
@@ -126,6 +129,7 @@
 				897299A026D807F800F5E319 /* ArtworkResponse.swift */,
 				897299A126D807F800F5E319 /* GameResponse.swift */,
 				8972999F26D807F800F5E319 /* LoginResponse.swift */,
+				896E25A426DD5336009261DC /* Game.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -320,6 +324,7 @@
 				E2310C9E26D9458300EE74EF /* HTTPRequest.swift in Sources */,
 				E2310CA026D9459000EE74EF /* IGDBRoutes.swift in Sources */,
 				E2310C9F26D9458700EE74EF /* ArtworkResponse.swift in Sources */,
+				896E25A626DD56BC009261DC /* Game.swift in Sources */,
 				E262388E26D8EC4E00AC6873 /* GameResponse.swift in Sources */,
 				E238253826D6CB760079D45C /* myWidget.swift in Sources */,
 				E2310CA326D9469E00EE74EF /* Routable.swift in Sources */,
@@ -334,6 +339,7 @@
 				E2310CAB26D94F6B00EE74EF /* NetworkManager.swift in Sources */,
 				E238253E26D6CB770079D45C /* myWidget.intentdefinition in Sources */,
 				E2310CB126D96D3500EE74EF /* Collection+Choose.swift in Sources */,
+				896E25A526DD5336009261DC /* Game.swift in Sources */,
 				897299A226D807F800F5E319 /* LoginResponse.swift in Sources */,
 				897299A426D807F900F5E319 /* ArtworkResponse.swift in Sources */,
 				E2D3ACD526D55DF90096DFCB /* ContentView.swift in Sources */,
@@ -526,7 +532,7 @@
 				CODE_SIGN_ENTITLEMENTS = widgetTest/widgetTest.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"widgetTest/Preview Content\"";
-				DEVELOPMENT_TEAM = 92FPV96TF2;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = widgetTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;

@@ -19,7 +19,7 @@ struct ContentView: View {
 }
 
 struct WidgetTest: View {
-    @State var results = [GameResponse]()
+    @State var results = [Game]()
     
     var body: some View {
         List(results, id: \.id) { item in
@@ -32,7 +32,7 @@ struct WidgetTest: View {
     
     func loadData() {
         NetworkManager.shared.getGameData { data in
-            self.results = data ?? [GameResponse.error]
+            self.results = data ?? [Game.error]
             return
         }
     }
