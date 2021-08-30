@@ -23,25 +23,31 @@ class NetworkManager {
     }
     
     func getGameData(completion: @escaping ([Game]?) -> Void) {
-        let gameRequest = HTTPRequest()
-        let route = IGDBRoutes.Game()
-        
-        print(buildIds())
-        
-        gameRequest.request(route.filterBy(field: "id", value: buildIds()), genericType: [GameResponse].self) { result, response in
-            switch result {
-            case .success(let res):
-                print(res)
-                let games = res.map { Game(gameResponse: $0) }
-                self.getImage(games: games) { result in
-                    completion(result)
-                }
-            case .failure(let err):
-                print("response error:")
-                print(err)
-                return completion([Game(id: -1, name: err.localizedDescription)])
-            }
-        }
+        var games = [Game]()
+        games.append(.init(id: 1, name: "Genshin impact", icon: UIImage(named: "steam_icon"), image: UIImage(named: "genshin-impact")))
+        games.append(.init(id: 1, name: "Gran Turismo Sport", icon: UIImage(named: "steam_icon"), image: UIImage(named: "Gran turismo")))
+        games.append(.init(id: 1, name: "GTA 5", icon: UIImage(named: "steam_icon"), image: UIImage(named: "GTA-5")))
+        games.append(.init(id: 1, name: "Genshin impact", icon: UIImage(named: "steam_icon"), image: UIImage(named: "genshin-impact")))
+        games.append(.init(id: 1, name: "Gran Turismo Sport", icon: UIImage(named: "steam_icon"), image: UIImage(named: "Gran turismo")))
+        games.append(.init(id: 1, name: "GTA 5", icon: UIImage(named: "steam_icon"), image: UIImage(named: "GTA-5")))
+        completion(games)
+//        let gameRequest = HTTPRequest()
+//        let route = IGDBRoutes.Game()
+//
+//        print(buildIds())
+//
+//        gameRequest.request(route.filterBy(field: "id", value: buildIds()), genericType: [GameResponse].self) { result, response in
+//            switch result {
+//            case .success(let res):
+//                print(res)
+//                let games = res.map { Game(gameResponse: $0) }
+//                completion(games)
+//            case .failure(let err):
+//                print("response error:")
+//                print(err)
+//                return completion([Game(id: -1, name: err.localizedDescription)])
+//            }
+//        }
     }
     
     func getImage(games: [Game], completion: ([Game]?) -> Void) {

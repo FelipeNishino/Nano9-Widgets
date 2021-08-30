@@ -115,6 +115,7 @@ struct Header: View {
         ZStack {
             //Imagem do Jogo
             Image(uiImage: image)
+                .resizable()
                 .clipShape(RoundedRectangle(cornerRadius: 15))
             
             VStack {
